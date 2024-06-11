@@ -1,5 +1,5 @@
 import { UsersRepository, UserInput } from '../../repositories/UsersRepository'
-import { hash } from 'bcryptjs'
+import bcryptJS from 'bcryptjs'
 
 export class CreateService {
   usersRepository = new UsersRepository()
@@ -9,7 +9,7 @@ export class CreateService {
 
     if (userWithEmail) throw new Error('Email already in use!')
 
-    const encryptedPassword = await hash(password, 8)
+    const encryptedPassword = await bcryptJS.hash(password, 8)
 
     await this.usersRepository.create({
       name,
