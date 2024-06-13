@@ -8,7 +8,7 @@ export interface UserInput {
   password: string
 }
 
-interface UserOutput {
+export interface UserOutput {
   id: string
   name: string
   email: string
