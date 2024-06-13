@@ -8,4 +8,4 @@ const jwt: JwtType = {
   expiresIn: '1d',
 }
 
-export { jwt }
+export default { jwt }
