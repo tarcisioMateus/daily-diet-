@@ -13,7 +13,7 @@ export interface UserOutput {
   name: string
   email: string
   password: string
-  created_at: string
+  createdAt: string
 }
 
 export class UsersRepository {
