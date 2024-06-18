@@ -1,15 +1,15 @@
-import {
-  MealsRepository,
-  MealUpdateInput,
-} from '../../repositories/MealsRepository'
+import { MealsRepository, Meal } from '../../repositories/MealsRepository'
 
 export class UpdateService {
   mealsRepository = new MealsRepository()
 
-  async execute(updatedMeal: MealUpdateInput): Promise<void> {
+  async execute(updatedMeal: Meal): Promise<void> {
     this.mealsRepository = new MealsRepository()
 
-    const currentMeal = await this.mealsRepository.getById(updatedMeal.id)
+    const currentMeal = await this.mealsRepository.getById(
+      updatedMeal.id,
+      updatedMeal.userId,
+    )
     if (!currentMeal) throw new Error('not found!')
 
     // if wasn't passed a value to the property, it'll use the previews value.

@@ -4,12 +4,12 @@ import { z } from 'zod'
 
 export class UsersController {
   async create(request: FastifyRequest, reply: FastifyReply) {
-    const createUserBodySchema = z.object({
+    const bodySchema = z.object({
       name: z.string(),
       email: z.string(),
       password: z.string(),
     })
-    const { name, email, password } = createUserBodySchema.parse(request.body)
+    const { name, email, password } = bodySchema.parse(request.body)
 
     const createService = new CreateService()
     await createService.execute({

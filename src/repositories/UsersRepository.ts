@@ -1,6 +1,6 @@
 import { knex } from '../database/knex'
 import { z } from 'zod'
-import { randomUUID } from 'crypto'
+import { randomUUID } from 'node:crypto'
 
 export interface UserInput {
   name: string
