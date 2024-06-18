@@ -1,5 +1,4 @@
 import { knex } from '../database/knex'
-import { z } from 'zod'
 import { randomUUID } from 'node:crypto'
 
 export interface MealInput {
@@ -11,7 +10,7 @@ export interface MealInput {
   userId: string
 }
 
-export interface MealOutput {
+export interface Meal {
   id: string
   userId: string
   name: string
@@ -21,27 +20,9 @@ export interface MealOutput {
   onDiet: boolean
 }
 
-export interface MealUpdateInput {
-  id: string
-  name: string
-  description: string
-  date: string
-  time: string
-  onDiet: boolean
-}
-
 export class MealsRepository {
   async create(mealInput: MealInput): Promise<void> {
-    const mealSchema = z.object({
-      name: z.string(),
-      description: z.string(),
-      date: z.string(),
-      time: z.string(),
-      onDiet: z.boolean(),
-      userId: z.string().uuid(),
-    })
-    const { name, description, date, time, onDiet, userId } =
-      mealSchema.parse(mealInput)
+    const { name, description, date, time, onDiet, userId } = mealInput
 
     await knex('meals').insert({
       id: randomUUID(),
@@ -54,13 +35,13 @@ export class MealsRepository {
     })
   }
 
-  async getById(id: string): Promise<MealOutput | undefined> {
-    const meal = await knex('meals').where({ id }).select().first()
+  async getById(id: string, userId: string): Promise<Meal | undefined> {
+    const meal = await knex('meals').where({ id, userId }).select().first()
     return meal
   }
 
-  async update(meal: MealUpdateInput): Promise<void> {
-    await knex('meals').where({ id: meal.id }).update({
+  async update(meal: Meal): Promise<void> {
+    await knex('meals').where({ id: meal.id, userId: meal.userId }).update({
       name: meal.name,
       description: meal.description,
       date: meal.date,
