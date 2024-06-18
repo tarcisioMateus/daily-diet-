@@ -40,6 +40,10 @@ export class MealsRepository {
     return meal
   }
 
+  async delete(id: string, userId: string): Promise<void> {
+    await knex('meals').where({ id, userId }).delete()
+  }
+
   async update(meal: Meal): Promise<void> {
     await knex('meals').where({ id: meal.id, userId: meal.userId }).update({
       name: meal.name,

@@ -8,4 +8,6 @@ export async function mealsRoutes(app: FastifyInstance) {
   app.addHook('preHandler', checkTokenExists)
   app.post('/', mealsController.create)
   app.put('/:id', mealsController.update)
+  app.get('/:id', mealsController.show)
+  app.delete('/:id', mealsController.delete)
 }
