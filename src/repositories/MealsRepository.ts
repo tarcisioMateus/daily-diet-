@@ -11,6 +11,25 @@ export interface MealInput {
   userId: string
 }
 
+export interface MealOutput {
+  id: string
+  userId: string
+  name: string
+  description: string
+  date: string
+  time: string
+  onDiet: boolean
+}
+
+export interface MealUpdateInput {
+  id: string
+  name: string
+  description: string
+  date: string
+  time: string
+  onDiet: boolean
+}
+
 export class MealsRepository {
   async create(mealInput: MealInput): Promise<void> {
     const mealSchema = z.object({
@@ -32,6 +51,21 @@ export class MealsRepository {
       time,
       onDiet,
       userId,
+    })
+  }
+
+  async getById(id: string): Promise<MealOutput | undefined> {
+    const meal = await knex('meals').where({ id }).select().first()
+    return meal
+  }
+
+  async update(meal: MealUpdateInput): Promise<void> {
+    await knex('meals').where({ id: meal.id }).update({
+      name: meal.name,
+      description: meal.description,
+      date: meal.date,
+      time: meal.time,
+      onDiet: meal.onDiet,
     })
   }
 }

@@ -7,4 +7,5 @@ const mealsController = new MealsController()
 export async function mealsRoutes(app: FastifyInstance) {
   app.addHook('preHandler', checkTokenExists)
   app.post('/', mealsController.create)
+  app.put('/:id', mealsController.update)
 }
