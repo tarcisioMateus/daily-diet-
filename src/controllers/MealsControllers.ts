@@ -8,6 +8,7 @@ import { CreateService } from '../services/meals/CreateService'
 import { UpdateService } from '../services/meals/UpdateService'
 import { ShowService } from '../services/meals/ShowService'
 import { DeleteService } from '../services/meals/DeleteService'
+import { ListService } from '../services/meals/ListService'
 
 export class MealsController {
   async create(request: FastifyRequest, reply: FastifyReply) {
@@ -112,6 +113,32 @@ export class MealsController {
     }
 
     return reply.status(200).send(meal)
+  }
+
+  async list(request: FastifyRequest, reply: FastifyReply) {
+    const querySchema = z.object({
+      search: z.union([z.string(), z.undefined()]),
+    })
+    const { search } = querySchema.parse(request.query)
+
+    let userId: string
+    try {
+      userId = getUserId(request)
+    } catch (error) {
+      return reply.status(401).send({
+        error: 'Unauthorized',
+      })
+    }
+
+    const listService = new ListService()
+    let meals: Meal[]
+    try {
+      meals = await listService.execute(userId, search)
+    } catch (error) {
+      return reply.status(404).send(error)
+    }
+
+    return reply.status(200).send(meals)
   }
 
   async delete(request: FastifyRequest, reply: FastifyReply) {

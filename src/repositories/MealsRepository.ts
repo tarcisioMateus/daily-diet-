@@ -26,7 +26,7 @@ export class MealsRepository {
 
     await knex('meals').insert({
       id: randomUUID(),
-      name,
+      name: name.toLowerCase().trim(),
       description,
       date,
       time,
@@ -38,6 +38,19 @@ export class MealsRepository {
   async getById(id: string, userId: string): Promise<Meal | undefined> {
     const meal = await knex('meals').where({ id, userId }).select().first()
     return meal
+  }
+
+  async getMealsByName(search: string, userId: string): Promise<Meal[]> {
+    const meals = await knex('meals')
+      .where({ userId })
+      .whereLike('name', `%${search.toLowerCase().trim()}%`)
+      .orderBy('meals.name')
+    return meals
+  }
+
+  async getMeals(userId: string): Promise<Meal[]> {
+    const meals = await knex('meals').where({ userId }).orderBy('meals.name')
+    return meals
   }
 
   async delete(id: string, userId: string): Promise<void> {
