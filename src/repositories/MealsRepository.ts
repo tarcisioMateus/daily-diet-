@@ -1,13 +1,23 @@
 import { knex } from '../database/knex'
 import { randomUUID } from 'node:crypto'
 
-export interface MealInput {
+export interface MealRawInput {
   name: string
   description: string
   date: string
   time: string
   onDiet: boolean
   userId: string
+}
+
+export interface MealRaw {
+  id: string
+  userId: string
+  name: string
+  description: string
+  date: string
+  time: string
+  onDiet: boolean
 }
 
 export interface Meal {
@@ -18,11 +28,23 @@ export interface Meal {
   date: string
   time: string
   onDiet: boolean
+  timeLineValue: string
+}
+
+interface MealInput {
+  name: string
+  description: string
+  date: string
+  time: string
+  onDiet: boolean
+  userId: string
+  timeLineValue: string
 }
 
 export class MealsRepository {
   async create(mealInput: MealInput): Promise<void> {
-    const { name, description, date, time, onDiet, userId } = mealInput
+    const { name, description, date, time, onDiet, userId, timeLineValue } =
+      mealInput
 
     await knex('meals').insert({
       id: randomUUID(),
@@ -32,6 +54,7 @@ export class MealsRepository {
       time,
       onDiet,
       userId,
+      timeLineValue,
     })
   }
 
@@ -64,6 +87,7 @@ export class MealsRepository {
       date: meal.date,
       time: meal.time,
       onDiet: meal.onDiet,
+      timeLineValue: meal.timeLineValue,
     })
   }
 }

@@ -1,9 +1,10 @@
-import { MealsRepository, Meal } from '../../repositories/MealsRepository'
+import { MealsRepository, MealRaw } from '../../repositories/MealsRepository'
+import { getTimeLineValueFromDateAndTime } from '../../utils/getTimeLineValueFromDateAndTime'
 
 export class UpdateService {
   mealsRepository = new MealsRepository()
 
-  async execute(updatedMeal: Meal): Promise<void> {
+  async execute(updatedMeal: MealRaw): Promise<void> {
     this.mealsRepository = new MealsRepository()
 
     const currentMeal = await this.mealsRepository.getById(
@@ -26,6 +27,11 @@ export class UpdateService {
       ? updatedMeal.time
       : currentMeal.time.trim().toLowerCase()
 
-    await this.mealsRepository.update(updatedMeal)
+    const timeLineValue: string = getTimeLineValueFromDateAndTime(
+      updatedMeal.date,
+      updatedMeal.time,
+    )
+
+    await this.mealsRepository.update({ ...updatedMeal, timeLineValue })
   }
 }

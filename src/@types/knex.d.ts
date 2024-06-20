@@ -18,6 +18,7 @@ declare module 'knex/types/tables' {
       date: string
       time: string
       onDiet: boolean
+      timeLineValue: string
     }
   }
 }

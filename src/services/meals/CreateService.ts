@@ -1,4 +1,8 @@
-import { MealsRepository, MealInput } from '../../repositories/MealsRepository'
+import {
+  MealsRepository,
+  MealRawInput,
+} from '../../repositories/MealsRepository'
+import { getTimeLineValueFromDateAndTime } from '../../utils/getTimeLineValueFromDateAndTime'
 
 export class CreateService {
   mealsRepository = new MealsRepository()
@@ -10,7 +14,8 @@ export class CreateService {
     time,
     onDiet,
     userId,
-  }: MealInput): Promise<void> {
+  }: MealRawInput): Promise<void> {
+    const timeLineValue: string = getTimeLineValueFromDateAndTime(date, time)
     await this.mealsRepository.create({
       name,
       description,
@@ -18,6 +23,7 @@ export class CreateService {
       time,
       onDiet,
       userId,
+      timeLineValue,
     })
   }
 }
