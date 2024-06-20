@@ -1,7 +1,10 @@
 import { app } from './app'
+import { env } from './env'
+
+const PORT: number = env.PORT
 
 app
   .listen({
-    port: 3333,
+    port: PORT,
   })
-  .then(() => console.log(`app running on PORT: 3333`))
+  .then(() => console.log(`app running on PORT: ${PORT}`))
