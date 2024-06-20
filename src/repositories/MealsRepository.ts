@@ -90,4 +90,25 @@ export class MealsRepository {
       timeLineValue: meal.timeLineValue,
     })
   }
+
+  async getMealsOrganizedByTimeLineValue(userId: string): Promise<Meal[]> {
+    const meals = await knex('meals')
+      .where({ userId })
+      .orderBy('meals.timeLineValue')
+    return meals
+  }
+
+  async getMealsOnDiet(userId: string): Promise<Meal[]> {
+    const meals = await knex('meals')
+      .where({ userId, onDiet: true })
+      .orderBy('meals.name')
+    return meals
+  }
+
+  async getMealsOutOfDiet(userId: string): Promise<Meal[]> {
+    const meals = await knex('meals')
+      .where({ userId, onDiet: false })
+      .orderBy('meals.name')
+    return meals
+  }
 }

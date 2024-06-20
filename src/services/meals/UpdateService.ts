@@ -5,8 +5,6 @@ export class UpdateService {
   mealsRepository = new MealsRepository()
 
   async execute(updatedMeal: MealRaw): Promise<void> {
-    this.mealsRepository = new MealsRepository()
-
     const currentMeal = await this.mealsRepository.getById(
       updatedMeal.id,
       updatedMeal.userId,
