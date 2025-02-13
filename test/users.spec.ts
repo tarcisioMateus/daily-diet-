@@ -36,7 +36,7 @@ describe('Users routes', () => {
     const response = await request(app.server).post('/singUp').send({
       name: 'Mike',
       email: 'mike@gmail.com',
-      password: 'abc123',
+      password: 'abcd1234',
     })
     expect(response.status).toBe(201)
   })
@@ -45,14 +45,58 @@ describe('Users routes', () => {
     await request(app.server).post('/singUp').send({
       name: 'Mike',
       email: 'mike@gmail.com',
-      password: 'abc123',
+      password: 'abcd1234',
     })
     const response = await request(app.server).post('/singUp').send({
       name: 'Mike',
       email: 'mike@gmail.com',
-      password: 'abc123',
+      password: 'abcd1234',
     })
     expect(response.status).toBe(500)
     expect(response.body.message).toBe('Email already in use!')
+  })
+
+  it('should not be able to create an user without an email', async () => {
+    const response = await request(app.server).post('/singUp').send({
+      name: 'Mike',
+      email: '',
+      password: 'abcd1234',
+    })
+    expect(response.body.message.includes('Invalid email address')).toBe(true)
+  })
+
+  it('should not be able to create an user without a name', async () => {
+    const response = await request(app.server).post('/singUp').send({
+      name: '',
+      email: 'mike@gmail.com',
+      password: 'abcd1234',
+    })
+    expect(response.body.message.includes('Name must not be empty')).toBe(true)
+  })
+
+  it('should not be able to create an user without a password', async () => {
+    const response = await request(app.server).post('/singUp').send({
+      name: 'Mike',
+      email: 'mike@gmail.com',
+      password: '',
+    })
+    expect(
+      response.body.message.includes(
+        'Password must be at least 8 characters long',
+      ),
+    ).toBe(true)
+  })
+
+  it('should not be able to create an user with a password with less than 8 characters', async () => {
+    const response = await request(app.server).post('/singUp').send({
+      name: 'Mike',
+      email: 'mike@gmail.com',
+      password: 'abc1234',
+    })
+    expect(
+      response.body.message.includes(
+        'Password must be at least 8 characters long',
+      ),
+    ).toBe(true)
   })
 })
