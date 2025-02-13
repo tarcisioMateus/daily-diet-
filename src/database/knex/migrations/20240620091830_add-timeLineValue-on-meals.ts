@@ -7,7 +7,11 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-  await knex.schema.alterTable('meals', (table) => {
-    table.dropColumn('timeLineValue')
-  })
+  const hasColumn = await knex.schema.hasColumn('meals', 'timeLineValue')
+
+  if (hasColumn) {
+    await knex.schema.alterTable('meals', (table) => {
+      table.dropColumn('timeLineValue')
+    })
+  }
 }

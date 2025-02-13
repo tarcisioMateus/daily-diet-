@@ -7,7 +7,7 @@ import {
   beforeEach,
   afterEach,
 } from 'vitest'
-import { spawn } from 'node:child_process'
+import { spawnSync } from 'node:child_process'
 import request from 'supertest'
 import { app } from '../src/app'
 
@@ -21,8 +21,15 @@ describe('Users routes', () => {
   })
 
   beforeEach(async () => {
-    spawn('npm', ['run', 'knex', '--', 'migrate:latest'])
-    spawn('npm', ['run', 'knex', '--', 'migrate:rollback', 'all'])
+    spawnSync('npm', ['run', 'knex', '--', 'migrate:latest'], {
+      stdio: 'inherit',
+    })
+  })
+
+  afterEach(async () => {
+    spawnSync('npm', ['run', 'knex', '--', 'migrate:rollback', 'all'], {
+      stdio: 'inherit',
+    })
   })
 
   it('should be able to create a new user', async () => {
@@ -31,7 +38,6 @@ describe('Users routes', () => {
       email: 'mike@gmail.com',
       password: 'abc123',
     })
-    console.log(response.body)
     expect(response.status).toBe(201)
   })
 })
