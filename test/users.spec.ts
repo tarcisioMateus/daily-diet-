@@ -40,4 +40,19 @@ describe('Users routes', () => {
     })
     expect(response.status).toBe(201)
   })
+
+  it('should not be able to create two users with the same email', async () => {
+    await request(app.server).post('/singUp').send({
+      name: 'Mike',
+      email: 'mike@gmail.com',
+      password: 'abc123',
+    })
+    const response = await request(app.server).post('/singUp').send({
+      name: 'Mike',
+      email: 'mike@gmail.com',
+      password: 'abc123',
+    })
+    expect(response.status).toBe(500)
+    expect(response.body.message).toBe('Email already in use!')
+  })
 })
