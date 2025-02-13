@@ -45,10 +45,14 @@ export class MealsController {
     if (!request.userId) return
 
     const bodySchema = z.object({
-      name: z.string(),
-      description: z.string(),
-      date: z.string(),
-      time: z.string(),
+      name: z.string().min(1, { message: 'Must not be empty' }),
+      description: z.string().min(1, { message: 'Must not be empty' }),
+      date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
+        message: 'String must be in the format YYYY-MM-DD (e.g., 2023-10-05)',
+      }),
+      time: z.string().regex(/^\d{2}:\d{2}$/, {
+        message: 'String must be in the format HH:MM (e.g., 12:34)',
+      }),
       onDiet: z.boolean(),
     })
     const { name, description, date, time, onDiet } = bodySchema.parse(

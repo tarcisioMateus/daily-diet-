@@ -61,7 +61,7 @@ describe('Meals routes', () => {
   })
 
   describe('create meal input validation', () => {
-    it.only('should not be able to create a meal with invalid input', async () => {
+    it('should not be able to create a meal with invalid input', async () => {
       await request(app.server).post('/singUp').send({
         name: 'Mike',
         email: 'mike@gmail.com',
@@ -134,5 +134,51 @@ describe('Meals routes', () => {
         ),
       ).toBe(true)
     })
+  })
+
+  it.only('should be able to update a meal', async () => {
+    await request(app.server).post('/singUp').send({
+      name: 'Mike',
+      email: 'mike@gmail.com',
+      password: 'abcd1234',
+    })
+    const singInResponse = await request(app.server).post('/singIn').send({
+      email: 'mike@gmail.com',
+      password: 'abcd1234',
+    })
+
+    const cookies = z.coerce.string().parse(singInResponse.get('Set-Cookie'))
+
+    await request(app.server).post('/meals').set('Cookie', cookies).send({
+      name: 'glass of milk',
+      description: 'cold',
+      date: '2025-02-13',
+      time: '08:51',
+      onDiet: true,
+    })
+
+    const listMealsResponse = await request(app.server)
+      .get('/meals')
+      .set('Cookie', cookies)
+    const mealId = listMealsResponse.body[0].id
+
+    const updatedMealResponse = await request(app.server)
+      .put(`/meals/${mealId}`)
+      .set('Cookie', cookies)
+      .send({
+        name: 'cake',
+        description: 'sweet',
+        date: '2025-02-13',
+        time: '08:51',
+        onDiet: true,
+      })
+    expect(updatedMealResponse.status).toBe(200)
+
+    const showMealResponse = await request(app.server)
+      .get(`/meals/${mealId}`)
+      .set('Cookie', cookies)
+    expect(showMealResponse.body).toEqual(
+      expect.objectContaining({ name: 'cake', description: 'sweet' }),
+    )
   })
 })
