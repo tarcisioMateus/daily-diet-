@@ -5,8 +5,10 @@ import { z } from 'zod'
 export class SessionsController {
   async create(request: FastifyRequest, reply: FastifyReply) {
     const bodySchema = z.object({
-      email: z.string(),
-      password: z.string(),
+      email: z.string().email({ message: 'Invalid email address' }),
+      password: z
+        .string()
+        .min(8, { message: 'Password must be at least 8 characters long' }),
     })
     const { email, password } = bodySchema.parse(request.body)
 
