@@ -136,7 +136,7 @@ describe('Meals routes', () => {
     })
   })
 
-  it.only('should be able to update a meal', async () => {
+  it('should be able to update a meal', async () => {
     await request(app.server).post('/singUp').send({
       name: 'Mike',
       email: 'mike@gmail.com',
@@ -180,5 +180,125 @@ describe('Meals routes', () => {
     expect(showMealResponse.body).toEqual(
       expect.objectContaining({ name: 'cake', description: 'sweet' }),
     )
+  })
+
+  it('should be able to list all meals', async () => {
+    await request(app.server).post('/singUp').send({
+      name: 'Mike',
+      email: 'mike@gmail.com',
+      password: 'abcd1234',
+    })
+    const singInResponse = await request(app.server).post('/singIn').send({
+      email: 'mike@gmail.com',
+      password: 'abcd1234',
+    })
+
+    const cookies = z.coerce.string().parse(singInResponse.get('Set-Cookie'))
+
+    for (let i = 10; i < 20; i++) {
+      await request(app.server)
+        .post('/meals')
+        .set('Cookie', cookies)
+        .send({
+          name: `glass of milk ${i}`,
+          description: `cold ${i}`,
+          date: '2025-02-13',
+          time: `08:${10 + i}`,
+          onDiet: true,
+        })
+    }
+
+    const listMealsResponse = await request(app.server)
+      .get('/meals')
+      .set('Cookie', cookies)
+
+    expect(listMealsResponse.body.length).toBe(10)
+
+    expect(listMealsResponse.body[0]).toEqual(
+      expect.objectContaining({
+        name: `glass of milk 10`,
+      }),
+    )
+  })
+
+  it('should be able to get a meals', async () => {
+    await request(app.server).post('/singUp').send({
+      name: 'Mike',
+      email: 'mike@gmail.com',
+      password: 'abcd1234',
+    })
+    const singInResponse = await request(app.server).post('/singIn').send({
+      email: 'mike@gmail.com',
+      password: 'abcd1234',
+    })
+
+    const cookies = z.coerce.string().parse(singInResponse.get('Set-Cookie'))
+
+    for (let i = 10; i < 20; i++) {
+      await request(app.server)
+        .post('/meals')
+        .set('Cookie', cookies)
+        .send({
+          name: `glass of milk ${i}`,
+          description: `cold ${i}`,
+          date: '2025-02-13',
+          time: `08:${10 + i}`,
+          onDiet: true,
+        })
+    }
+
+    const listMealsResponse = await request(app.server)
+      .get('/meals')
+      .set('Cookie', cookies)
+
+    const showMealResponse = await request(app.server)
+      .get(`/meals/${listMealsResponse.body[7].id}`)
+      .set('Cookie', cookies)
+    expect(showMealResponse.body).toEqual(
+      expect.objectContaining({ name: 'glass of milk 17' }),
+    )
+  })
+
+  it('should be able to delete a meals', async () => {
+    await request(app.server).post('/singUp').send({
+      name: 'Mike',
+      email: 'mike@gmail.com',
+      password: 'abcd1234',
+    })
+    const singInResponse = await request(app.server).post('/singIn').send({
+      email: 'mike@gmail.com',
+      password: 'abcd1234',
+    })
+
+    const cookies = z.coerce.string().parse(singInResponse.get('Set-Cookie'))
+
+    for (let i = 10; i < 20; i++) {
+      await request(app.server)
+        .post('/meals')
+        .set('Cookie', cookies)
+        .send({
+          name: `glass of milk ${i}`,
+          description: `cold ${i}`,
+          date: '2025-02-13',
+          time: `08:${10 + i}`,
+          onDiet: true,
+        })
+    }
+
+    const listMealsResponse = await request(app.server)
+      .get('/meals')
+      .set('Cookie', cookies)
+
+    await request(app.server)
+      .delete(`/meals/${listMealsResponse.body[7].id}`)
+      .set('Cookie', cookies)
+
+    const listMealsResponseAfterDelete = await request(app.server)
+      .get('/meals')
+      .set('Cookie', cookies)
+    expect(listMealsResponseAfterDelete.body[7]).toEqual(
+      expect.objectContaining({ name: 'glass of milk 18' }),
+    )
+    expect(listMealsResponseAfterDelete.body.length).toBe(9)
   })
 })
