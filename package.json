@@ -7,7 +7,8 @@
     "lint": "eslint src --ext .ts --fix",
     "dev": "export NODE_ENV=development && tsx watch src/server.ts",
     "knex": "node --no-warnings --import tsx ./node_modules/knex/bin/cli.js",
-    "test": "export NODE_ENV=test && vitest"
+    "test": "export NODE_ENV=test && vitest",
+    "build": "tsup src --out-dir build"
   },
   "keywords": [],
   "author": "Tarcisio Mateus",
@@ -22,6 +23,7 @@
     "eslint": "^8.57.0",
     "sqlite3": "^5.1.7",
     "supertest": "^7.0.0",
+    "tsup": "8.3.6",
     "tsx": "^4.11.0",
     "typescript": "^5.4.5",
     "vitest": "^1.6.0"
