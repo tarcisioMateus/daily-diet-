@@ -2,7 +2,7 @@ import { MealsRepository, Meal } from '../../repositories/MealsRepository'
 import { getMealsBestSequence } from '../../utils/getMealsBestSequence'
 
 export interface MealsMetrics {
-  bestSequence: Meal[]
+  bestSequence: number
   amountOnDiet: number
   amountOutOfDiet: number
   totalAmount: number
@@ -24,7 +24,7 @@ export class ShowService {
       await this.mealsRepository.getMealsOutOfDiet(userId)
 
     return {
-      bestSequence,
+      bestSequence: bestSequence.length,
       amountOnDiet: mealsOnDiet.length,
       amountOutOfDiet: mealsOutOfDiet.length,
       totalAmount: meals.length,
